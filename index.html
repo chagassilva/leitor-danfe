@@ -1,151 +1,180 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leitor de DANFE - AI Powered</title>
     <style>
-        :root {
-            --primary-color: #4A90E2;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333;
+      :root {
+        --primary-color: #4a90e2;
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-color: #333;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: var(--card-bg);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+      }
+
+      .upload-area {
+        border: 2px dashed #cbd5e0;
+        padding: 2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: border-color 0.3s;
+        margin-bottom: 1.5rem;
+      }
+
+      .upload-area:hover {
+        border-color: var(--primary-color);
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .btn-upload {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        width: 100%;
+        transition: background 0.3s;
+      }
+
+      .btn-upload:hover {
+        background-color: #357abd;
+      }
+      .btn-upload:disabled {
+        background-color: #a0aec0;
+        cursor: not-allowed;
+      }
+
+      #file-name {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #718096;
+      }
+
+      #result-area {
+        margin-top: 20px;
+        text-align: left;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        display: none;
+        overflow-x: auto;
+      }
+
+      .spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .upload-area {
-            border: 2px dashed #cbd5e0;
-            padding: 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: border-color 0.3s;
-            margin-bottom: 1.5rem;
-        }
-
-        .upload-area:hover { border-color: var(--primary-color); }
-
-        input[type="file"] { display: none; }
-
-        .btn-upload {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            width: 100%;
-            transition: background 0.3s;
-        }
-
-        .btn-upload:hover { background-color: #357abd; }
-        .btn-upload:disabled { background-color: #a0aec0; cursor: not-allowed; }
-
-        #file-name {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #718096;
-        }
-
-        #result-area {
-            margin-top: 20px;
-            text-align: left;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            display: none;
-            overflow-x: auto;
-        }
-
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="container">
-        <h2>📄 Scanner de DANFE</h2>
-        <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Envie a imagem ou PDF da nota fiscal</p>
+      <h2>📄 Scanner de DANFE</h2>
+      <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px">
+        Envie a imagem ou PDF da nota fiscal
+      </p>
 
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <span style="font-size: 2rem;">📤</span>
-            <p>Clique para selecionar o arquivo</p>
-            <span id="file-name">Nenhum arquivo selecionado</span>
-        </div>
+      <div
+        class="upload-area"
+        onclick="document.getElementById('fileInput').click()"
+      >
+        <span style="font-size: 2rem">📤</span>
+        <p>Clique para selecionar o arquivo</p>
+        <span id="file-name">Nenhum arquivo selecionado</span>
+      </div>
 
-        <input 
-            type="file" 
-            id="fileInput" 
-            accept="image/png, image/jpeg, image/jpg, application/pdf"
-            onchange="updateFileName()"
-        >
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/png, image/jpeg, image/jpg, application/pdf"
+        onchange="updateFileName()"
+      />
 
-        <button id="sendBtn" class="btn-upload" onclick="uploadToN8n()">
+      <!-- <button id="sendBtn" class="btn-upload" onclick="uploadToN8n()">
             Processar Documento 
             <div class="spinner" id="spinner"></div>
-        </button>
+        </button> -->
 
-        <div id="result-area">
-            <strong>📊 Dados Extraídos:</strong>
-            <pre id="jsonOutput"></pre>
-        </div>
+      <button id="sendBtn" class="btn-upload" onclick="uploadToN8n()">
+        Processar Documento
+        <svg
+          style="width: 18px; height: 18px; margin-left: 8px"
+          viewBox="0 0 24 24"
+        >
+          <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+        </svg>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div id="result-area">
+        <strong>📊 Dados Extraídos:</strong>
+        <pre id="jsonOutput"></pre>
+      </div>
     </div>
 
-<script>
-    const WEBHOOK_URL = 'https://n8n.chagassilva.com/webhook/extrair-dados-danfe';
+    <script>
+      const WEBHOOK_URL =
+        "https://n8n.chagassilva.com/webhook/extrair-dados-danfe";
 
-    function updateFileName() {
-        const input = document.getElementById('fileInput');
-        const fileNameDisplay = document.getElementById('file-name');
+      function updateFileName() {
+        const input = document.getElementById("fileInput");
+        const fileNameDisplay = document.getElementById("file-name");
 
         if (input.files.length > 0) {
-            fileNameDisplay.textContent = input.files[0].name;
-            fileNameDisplay.style.color = "#4A90E2";
+          fileNameDisplay.textContent = input.files[0].name;
+          fileNameDisplay.style.color = "#4A90E2";
         }
-    }
+      }
 
-    async function uploadToN8n() {
-        const input = document.getElementById('fileInput');
-        const btn = document.getElementById('sendBtn');
-        const spinner = document.getElementById('spinner');
-        const resultArea = document.getElementById('result-area');
-        const jsonOutput = document.getElementById('jsonOutput');
+      async function uploadToN8n() {
+        const input = document.getElementById("fileInput");
+        const btn = document.getElementById("sendBtn");
+        const spinner = document.getElementById("spinner");
+        const resultArea = document.getElementById("result-area");
+        const jsonOutput = document.getElementById("jsonOutput");
 
         if (input.files.length === 0) {
-            alert("Por favor, selecione um arquivo primeiro!");
-            return;
+          alert("Por favor, selecione um arquivo primeiro!");
+          return;
         }
 
         btn.disabled = true;
@@ -155,46 +184,44 @@
 
         const file = input.files[0];
         const allowedTypes = [
-            "image/png",
-            "image/jpeg",
-            "image/jpg",
-            "application/pdf"
+          "image/png",
+          "image/jpeg",
+          "image/jpg",
+          "application/pdf",
         ];
 
         if (!allowedTypes.includes(file.type)) {
-            alert("Formato inválido! Envie PNG, JPG, JPEG ou PDF.");
-            btn.disabled = false;
-            spinner.style.display = "none";
-            return;
+          alert("Formato inválido! Envie PNG, JPG, JPEG ou PDF.");
+          btn.disabled = false;
+          spinner.style.display = "none";
+          return;
         }
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append("file", file);
 
         try {
-            const response = await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                body: formData
-            });
+          const response = await fetch(WEBHOOK_URL, {
+            method: "POST",
+            body: formData,
+          });
 
-            if (response.ok) {
-                const data = await response.json();
-                resultArea.style.display = "block";
-                jsonOutput.textContent = JSON.stringify(data, null, 2);
-            } else {
-                alert('Erro ao comunicar com o n8n: ' + response.statusText);
-            }
-
+          if (response.ok) {
+            const data = await response.json();
+            resultArea.style.display = "block";
+            jsonOutput.textContent = JSON.stringify(data, null, 2);
+          } else {
+            alert("Erro ao comunicar com o n8n: " + response.statusText);
+          }
         } catch (error) {
-            console.error('Erro:', error);
-            alert('Erro na requisição. Veja o console (F12).');
+          console.error("Erro:", error);
+          alert("Erro na requisição. Veja o console (F12).");
         } finally {
-            btn.disabled = false;
-            btn.childNodes[0].nodeValue = "Processar Documento";
-            spinner.style.display = "none";
+          btn.disabled = false;
+          btn.childNodes[0].nodeValue = "Processar Documento";
+          spinner.style.display = "none";
         }
-    }
-</script>
-
-</body>
+      }
+    </script>
+  </body>
 </html>
