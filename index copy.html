@@ -2,10 +2,8 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leitor de DANFE - AI Powered</title>
-
     <style>
       :root {
         --primary-color: #4a90e2;
@@ -14,50 +12,34 @@
         --text-color: #333;
       }
 
-      * {
-        box-sizing: border-box;
-      }
-
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-color);
-        margin: 0;
-        padding: 10px;
         display: flex;
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;
         min-height: 100vh;
+        margin: 0;
       }
 
       .container {
         background-color: var(--card-bg);
-        padding: 1.5rem;
-        border-radius: 14px;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 420px;
-        box-shadow: 0 3px 18px rgba(0, 0, 0, 0.08);
-      }
-
-      h2 {
-        font-size: 1.4rem;
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-        text-align: center;
-      }
-
-      p {
+        max-width: 500px;
         text-align: center;
       }
 
       .upload-area {
         border: 2px dashed #cbd5e0;
-        padding: 1.8rem;
-        border-radius: 10px;
+        padding: 2rem;
+        border-radius: 8px;
         cursor: pointer;
-        transition: 0.2s ease;
-        text-align: center;
-        margin-bottom: 1.2rem;
+        transition: border-color 0.3s;
+        margin-bottom: 1.5rem;
       }
 
       .upload-area:hover {
@@ -71,23 +53,28 @@
       .btn-upload {
         background-color: var(--primary-color);
         color: white;
-        padding: 14px;
+        padding: 12px 24px;
         border: none;
-        border-radius: 10px;
+        border-radius: 6px;
         cursor: pointer;
-        width: 100%;
-        font-size: 1rem;
+        font-size: 16px;
         font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: 0.3s;
+        width: 100%;
+        transition: background 0.3s;
       }
 
+      .btn-upload:hover {
+        background-color: #357abd;
+      }
       .btn-upload:disabled {
         background-color: #a0aec0;
         cursor: not-allowed;
+      }
+
+      #file-name {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #718096;
       }
 
       #result-area {
@@ -95,25 +82,21 @@
         text-align: left;
         background: #f8f9fa;
         padding: 15px;
-        border-radius: 10px;
-        display: none;
+        border-radius: 6px;
         border: 1px solid #e2e8f0;
+        display: none;
         overflow-x: auto;
-      }
-
-      #file-name {
-        font-size: 0.9rem;
-        color: #718096;
       }
 
       .spinner {
         display: none;
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         border: 3px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
         border-top-color: #fff;
         animation: spin 1s linear infinite;
+        margin-left: 10px;
       }
 
       @keyframes spin {
@@ -121,36 +104,21 @@
           transform: rotate(360deg);
         }
       }
-
-      /* Ajustes específicos para telas abaixo de 380px */
-      @media (max-width: 380px) {
-        .container {
-          padding: 1.2rem;
-        }
-
-        .upload-area {
-          padding: 1.4rem;
-        }
-
-        .btn-upload {
-          padding: 12px;
-          font-size: 0.95rem;
-        }
-      }
     </style>
   </head>
-
   <body>
     <div class="container">
       <h2>📄 Scanner de DANFE</h2>
-      <p style="font-size: 0.85rem; color: #555; margin-bottom: 16px;">
+      <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px">
         Envie a imagem ou PDF da nota fiscal
       </p>
 
-      <!-- ÁREA DE UPLOAD -->
-      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-        <span style="font-size: 2.5rem">📤</span>
-        <p style="margin: 10px 0;">Clique para selecionar</p>
+      <div
+        class="upload-area"
+        onclick="document.getElementById('fileInput').click()"
+      >
+        <span style="font-size: 2rem">📤</span>
+        <p>Clique para selecionar o arquivo</p>
         <span id="file-name">Nenhum arquivo selecionado</span>
       </div>
 
@@ -161,16 +129,22 @@
         onchange="updateFileName()"
       />
 
-      <!-- BOTÃO -->
+      <!-- <button id="sendBtn" class="btn-upload" onclick="uploadToN8n()">
+            Processar Documento 
+            <div class="spinner" id="spinner"></div>
+        </button> -->
+
       <button id="sendBtn" class="btn-upload" onclick="uploadToN8n()">
         Processar Documento
-        <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24">
+        <svg
+          style="width: 18px; height: 18px; margin-left: 8px"
+          viewBox="0 0 24 24"
+        >
           <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
         </svg>
         <div class="spinner" id="spinner"></div>
       </button>
 
-      <!-- RESULT -->
       <div id="result-area">
         <strong>📊 Dados Extraídos:</strong>
         <pre id="jsonOutput"></pre>
@@ -178,57 +152,75 @@
     </div>
 
     <script>
-      const WEBHOOK_URL = "https://n8n.chagassilva.com/webhook/extrair-dados-danfe";
+      const WEBHOOK_URL =
+        "https://n8n.chagassilva.com/webhook/extrair-dados-danfe";
 
       function updateFileName() {
-        const fileInput = document.getElementById("fileInput");
-        const display = document.getElementById("file-name");
-        if (fileInput.files.length > 0) {
-          display.textContent = fileInput.files[0].name;
-          display.style.color = "#4A90E2";
+        const input = document.getElementById("fileInput");
+        const fileNameDisplay = document.getElementById("file-name");
+
+        if (input.files.length > 0) {
+          fileNameDisplay.textContent = input.files[0].name;
+          fileNameDisplay.style.color = "#4A90E2";
         }
       }
 
       async function uploadToN8n() {
-        const fileInput = document.getElementById("fileInput");
+        const input = document.getElementById("fileInput");
         const btn = document.getElementById("sendBtn");
         const spinner = document.getElementById("spinner");
         const resultArea = document.getElementById("result-area");
-        const output = document.getElementById("jsonOutput");
+        const jsonOutput = document.getElementById("jsonOutput");
 
-        if (fileInput.files.length === 0) {
-          alert("Selecione um arquivo primeiro!");
+        if (input.files.length === 0) {
+          alert("Por favor, selecione um arquivo primeiro!");
           return;
         }
 
         btn.disabled = true;
-        btn.childNodes[0].nodeValue = "Processando...";
+        btn.childNodes[0].nodeValue = "Analisando...";
         spinner.style.display = "inline-block";
+        resultArea.style.display = "none";
+
+        const file = input.files[0];
+        const allowedTypes = [
+          "image/png",
+          "image/jpeg",
+          "image/jpg",
+          "application/pdf",
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+          alert("Formato inválido! Envie PNG, JPG, JPEG ou PDF.");
+          btn.disabled = false;
+          spinner.style.display = "none";
+          return;
+        }
 
         const formData = new FormData();
-        formData.append("file", fileInput.files[0]);
+        formData.append("file", file);
 
         try {
-          const res = await fetch(WEBHOOK_URL, {
+          const response = await fetch(WEBHOOK_URL, {
             method: "POST",
             body: formData,
           });
 
-          if (res.ok) {
-            const data = await res.json();
+          if (response.ok) {
+            const data = await response.json();
             resultArea.style.display = "block";
-            output.textContent = JSON.stringify(data, null, 2);
+            jsonOutput.textContent = JSON.stringify(data, null, 2);
           } else {
-            alert("Erro no servidor: " + res.statusText);
+            alert("Erro ao comunicar com o n8n: " + response.statusText);
           }
-        } catch (err) {
-          alert("Erro na requisição.");
-          console.error(err);
+        } catch (error) {
+          console.error("Erro:", error);
+          alert("Erro na requisição. Veja o console (F12).");
+        } finally {
+          btn.disabled = false;
+          btn.childNodes[0].nodeValue = "Processar Documento";
+          spinner.style.display = "none";
         }
-
-        btn.disabled = false;
-        btn.childNodes[0].nodeValue = "Processar Documento";
-        spinner.style.display = "none";
       }
     </script>
   </body>
